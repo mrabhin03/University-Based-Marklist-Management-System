@@ -23,26 +23,26 @@ A PHP-based web application built for managing university-level student marklist
 ## 📸 Screenshots
 
 ### Marklist View
-![Results Page](screenshots/Results.png)
+![Results Page](Screenshots/Results.png)
 
 ### Home view
-![Home](screenshots/Home(Program).png)
+![Home](Screenshots/Home(Program).png)
 
 ### Mark Add or Update page
-![Update page](screenshots/AddOrUpdateMarks.png)
+![Update page](Screenshots/AddOrUpdateMarks.png)
 
 ### Courses View
-![Courses View](screenshots/CourseDetails.png)
+![Courses View](Screenshots/CourseDetails.png)
 
 ### Page to Add Course
-![Add Course](screenshots/AddCourse.png)
+![Add Course](Screenshots/AddCourse.png)
 
 ## 🧑‍💻 How to Use
 
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/mrabhin03/University-Based-Marklist-Management-System
-````
+   ```
 
 2. **Import the Database**
 
