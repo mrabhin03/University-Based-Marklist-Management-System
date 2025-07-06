@@ -1,8 +1,3 @@
-Sure, Abhin! Here's a well-structured `README.md` file for your **University-Based Marklist Management System** GitHub repository:
-
----
-
-```markdown
 # 🎓 University-Based Marklist Management System
 
 A PHP-based web application built for managing university-level student marklists efficiently. It provides a user-friendly admin panel to handle students, courses, and exam results with automatic GPA calculations and printable marklists.
