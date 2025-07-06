@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css'); ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css')."?t=".time(); ?>">
 </head>
 <body>
   <div class="header">
@@ -35,9 +35,9 @@ $i=1;
 foreach($Semesters as $Semester){
 ?>
   
-    <div class="program">
-      <div class="program-title"><?=($i++).". ".numberToWords($Semester->Semester)." Semester"?></div>
-      <div class="program-buttons">
+    <div class="base">
+      <div class="base-title"><?=($i++).". ".numberToWords($Semester->Semester)." Semester"?></div>
+      <div class="base-buttons">
         <a href="courses?program=<?=$program?>&semester=<?=$Semester->Semester?>"><button>View Courses</button></a>
       </div>
     </div>

@@ -17,9 +17,9 @@
 <?php
 foreach($exams as $details){
 ?>
-    <div class="program">
-      <div class="program-title"><?=$details->ExamName." - (".$details->AcademicYear?>)</div>
-      <div class="program-buttons">
+    <div class="base">
+      <div class="base-title"><?=$details->ExamName." - (".$details->AcademicYear?>)</div>
+      <div class="base-buttons">
         <a href="ManageExam?ExamID=<?=$details->ExamID?>&program=<?=$program?>"><button>Edit Details</button></a>
         <button onclick="deleteExam('<?=$details->ExamID?>')" style='background-color:#c11;color:white'>Delete</button>
       </div>

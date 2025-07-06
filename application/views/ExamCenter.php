@@ -22,9 +22,9 @@ foreach($examcenter as $details){
         $io=$details->Status;
     }
 ?>
-    <div class="program">
-      <div class="program-title"><?=$details->ExamCenter?></div>
-      <div class="program-buttons">
+    <div class="base">
+      <div class="base-title"><?=$details->ExamCenter?></div>
+      <div class="base-buttons">
         <a href="CenterManage?Center=<?=$details->ExamCenterID?>"><button>Edit Center</button></a>
         <button onclick="deleteCenter('<?=$details->ExamCenterID?>',<?=($details->Status==0)?2:3?>)" style='background-color:<?=($details->Status==0)?"#c11":"#181"?>;color:white;'><?=($details->Status==0)?"Delete":"Activate"?></button>
       </div>

@@ -61,7 +61,7 @@ body {
       padding: 0 20px;
     }
 
-    .program {
+    .base {
       background-color: #ffffff;
       padding: 20px;
       border-radius: 10px;
@@ -69,13 +69,13 @@ body {
       margin-bottom: 20px;
     }
 
-    .program-title {
+    .base-title {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 15px;
     }
 
-    .program-buttons button {
+    .base-buttons button {
       margin-right: 10px;
       margin-bottom: 10px;
       padding: 8px 16px;
@@ -87,17 +87,17 @@ body {
       transition: background-color 0.3s ease;
     }
 
-    .program-buttons button:hover {
+    .base-buttons button:hover {
       background-color: #2c3e50;
     }
 
     @media (max-width: 600px) {
-      .program-buttons {
+      .base-buttons {
         display: flex;
         flex-direction: column;
       }
 
-      .program-buttons button {
+      .base-buttons button {
         margin-right: 0;
       }
     }

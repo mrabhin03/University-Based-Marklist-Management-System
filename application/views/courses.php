@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css'); ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css')."?t=".time(); ?>">
 </head>
 <body>
   <div class="header">
@@ -19,9 +19,9 @@ $i=1;
 foreach($course as $details){
 ?>
   
-    <div class="program">
-      <div class="program-title"><?=($i++).". ".$details->CourseCode." - ".$details->CourseName?></div>
-      <div class="program-buttons">
+    <div class="base">
+      <div class="base-title"><?=($i++).". ".$details->CourseCode." - ".$details->CourseName?></div>
+      <div class="base-buttons">
         <a href="ManageCourse?CourseCode=<?=$details->CourseCode?>&program=<?=$program?>&semester=<?=$semester?>"><button>Edit Details</button></a>
         <button onclick="deleteCourse('<?=$details->CourseCode?>')" style='background-color:#c11;color:white'>Delete</button>
       </div>

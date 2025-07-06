@@ -44,7 +44,6 @@ function calculateGPA($internal, $external) {
         <p><strong>PRN:</strong> <?=$Student->PRN?><br>
         <strong>Name:</strong> <?=$Student->Name?><br>
         <strong>Program:</strong> <?=$Student->ProgramName?><br>
-        <!-- <strong>Exam Centre:</strong> <?=$Student->ExamCenter?></p> -->
       </div>
       <form action="createAtts" method="POST">
         <input type="hidden" name='attID' value='<?=(isset($AttDetails))?$AttDetails->AttID:"0"?>'>

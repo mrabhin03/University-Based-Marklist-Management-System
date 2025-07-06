@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css'); ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/home.css')."?t=".time(); ?>">
 </head>
 <body>
   <div class="header">
@@ -17,9 +17,9 @@
 <?php
 foreach($program as $details){
 ?>
-    <div class="program">
-      <div class="program-title"><?=$details->ProgramName?></div>
-      <div class="program-buttons">
+    <div class="base">
+      <div class="base-title"><?=$details->ProgramName?></div>
+      <div class="base-buttons">
         <a href="AcademicYear?program=<?=$details->ProgramID?>"><button>View Students</button></a>
         <a href="Semester?program=<?=$details->ProgramID?>"><button>View Courses</button></a>
         <a href="exams?program=<?=$details->ProgramID?>"><button>View Exams</button></a>
