@@ -154,8 +154,15 @@ function calculateGPA($internal, $external) {
     function saveChanges(CourseCode,AttID,MarkID,obj,NO){
         const par=obj.parentNode.parentNode;
 
-        const INTS=par.querySelector("#INTS").value;
-        const EXT=par.querySelector("#EXT").value;
+        let  INTS=parseFloat(par.querySelector("#INTS").value);
+        INTS=(INTS>5)?5:INTS;
+        par.querySelector("#INTS").value=INTS.toFixed(2);
+
+
+        let EXT=parseFloat(par.querySelector("#EXT").value);
+        EXT=(EXT>5)?5:EXT;
+        par.querySelector("#EXT").value=EXT.toFixed(2);
+
         GPAValue=((INTS*0.25)+(EXT*0.75)).toFixed(2);
         par.querySelector("#GPA").innerHTML=GPAValue
         const Result=par.querySelector("#Result")

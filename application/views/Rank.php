@@ -65,7 +65,7 @@ function gradingSystem($GPA) {
         </thead>
         <tbody>
           <?php
-          $i=1;
+          $i=0;
           if(count($results)==0){
             ?>
                 <tr>
@@ -73,10 +73,11 @@ function gradingSystem($GPA) {
                 </tr>
             <?php
           }else{
+            $Medals=['','🥇','🥈','🥉'];
             foreach($results as $value){
           ?>
             <tr>
-              <td data-label="Rank"><?=$i++?></td>
+              <td data-label="Rank" <?=(++$i<=3)?"style='font-size:20px;'":""?>><?=($i<=3)?$Medals[$i]:$i;?></td>
               <td data-label="Name" style='text-align:left;'><?=$value->Name?></td>
               <td data-label="GPA"><?=number_format($value->TotalGPA,2)?></td>
               <td data-label="Grade"><?=($value->Pass==1)?gradingSystem($value->TotalGPA):'---'?></td>
