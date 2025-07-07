@@ -18,9 +18,10 @@
 foreach($exams as $details){
 ?>
     <div class="base">
-      <div class="base-title"><?=$details->ExamName." - (".$details->AcademicYear?>)</div>
+      <div class="base-title"><?=$details->ExamName." - <span style='font-size:14px;color:orange;'>(".$details->AcademicYear?>)</span></div>
       <div class="base-buttons">
         <a href="ManageExam?ExamID=<?=$details->ExamID?>&program=<?=$program?>"><button>Edit Details</button></a>
+        <a href="../Result/Rank?ExamID=<?=$details->ExamID?>"><button style='background-color:#3671ac'>View Rank</button></a>
         <button onclick="deleteExam('<?=$details->ExamID?>')" style='background-color:#c11;color:white'>Delete</button>
       </div>
     </div>

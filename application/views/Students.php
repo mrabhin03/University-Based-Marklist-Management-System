@@ -20,7 +20,7 @@ foreach($students as $details){
     <div class="base">
       <div class="base-title"><?=$details->PRN." - ".$details->Name?></div>
       <div class="base-buttons">
-        <a href="studentdetails?PRN=<?=$details->PRN?>&program=<?=$program?>&AcademicYear=<?=$AcademicYear?>"><button>Mark Details</button></a>
+        <a href="studentdetails?PRN=<?=$details->PRN?>&program=<?=$program?>&AcademicYear=<?=$AcademicYear?>"><button style='background-color:#0288d1'>Mark Details</button></a>
         <a href="studentManage?PRN=<?=$details->PRN?>&program=<?=$program?>&AcademicYear=<?=$AcademicYear?>"><button>Edit Details</button></a>
         <button onclick="deleteStudent('<?=$details->PRN?>')" style='background-color:#c11;color:white'>Delete</button>
       </div>

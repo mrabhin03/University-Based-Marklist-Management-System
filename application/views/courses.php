@@ -20,7 +20,7 @@ foreach($course as $details){
 ?>
   
     <div class="base">
-      <div class="base-title"><?=($i++).". ".$details->CourseCode." - ".$details->CourseName?></div>
+      <div class="base-title"><?=($i++).". ".$details->CourseCode." - ".$details->CourseName." <span style='font-size:14px;color:orange;'>(".$details->CourseType?>)</span></div>
       <div class="base-buttons">
         <a href="ManageCourse?CourseCode=<?=$details->CourseCode?>&program=<?=$program?>&semester=<?=$semester?>"><button>Edit Details</button></a>
         <button onclick="deleteCourse('<?=$details->CourseCode?>')" style='background-color:#c11;color:white'>Delete</button>

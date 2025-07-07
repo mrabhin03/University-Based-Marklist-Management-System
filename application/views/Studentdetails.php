@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Exam Result</title>
+  <title>Exam Result</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/style.css')."?t=".time() ?>">
 </head>
@@ -17,21 +17,24 @@ function calculateGPA($internal, $external) {
 
 ?>
 <body>
+  <script>
+    let credits=[];
+  </script>
     
   <div class="container">
     <div class='headerSecond'><a href="students?program=<?=$program?>&AcademicYear=<?=$AcademicYear?>"><ion-icon style='text-decoration: none;font-size: 25px;' name="close-outline"></ion-icon></a></div>
     <?php if(count($semester)==0){die("<h1>No exams Found</h1>");}?>
-    <h1>Our Results</h1>
+    <h1>Results</h1>
     <?php if(isset($Exam)){?><h2><?=$Exam->ExamName?></h2><?php }?>
 
-    <form class="input-form" method='GET'>
+    <form class="input-form Sub" method='GET'>
       <input type="hidden" placeholder="Enter PRN" name='PRN' value='<?=(isset($PRN))?$PRN:""?>' required/>
       <input type="hidden" name='program' value='<?=$program?>'>
       <select name='Exam' required>
         <option disabled selected value=''>Select Your Semester</option>
         <?php
           foreach($semester as $sem){?>
-            <option value='<?=$sem->ExamID?>'  <?=(isset($Exam) && ($Exam->ExamID==$sem->ExamID))?"SELECTED":""?>><?=explode('PG',$sem->ExamName)[0]?></option>
+            <option value='<?=$sem->ExamID?>'  <?=(isset($Exam) && ($Exam->ExamID==$sem->ExamID))?"SELECTED":""?>><?=$sem->ExamName?></option>
             <?php
           }
         
@@ -96,13 +99,17 @@ function calculateGPA($internal, $external) {
             <?php
               $total=0;
               $pass=true;
+              $totalCredits=0;
+              $i=0;
               foreach($result as $value){
                 $GPA=calculateGPA($value->INTS,$value->EXT);
                 $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
-                $total+=$GPA;
+                $total+=$GPA*$value->Credit;
+                $totalCredits+=$value->Credit;
                 if($GPA==0){
                   $pass=false;
                 }
+                echo "<script>credits[$i]=".$value->Credit.";</script>";
             ?>
               <tr>
                 <td data-label="Course Code"><?=$value->CourseCode?></td>
@@ -112,16 +119,17 @@ function calculateGPA($internal, $external) {
                 <td data-label="EXT"><input style='width:80px' type="number" id='EXT' value='<?=$value->EXT?>'></td>
                 <td data-label="GPA" id='GPA'><?=number_format($GPA,2)?></td>
                 <td data-label="Result" id='Result' class="<?=($GPA>=2)?'result-pass':'result-fail'?>"><?=($GPA>=2)?"Passed":"Failed"?></td>
-                <td data-label="Action"><button onclick="saveChanges('<?=$value->CourseCode?>','<?=$AttDetails->AttID?>',<?=$value->MarkID?>,this)" class='editCourse'>Edit</button></td>
+                <td data-label="Action"><button onclick="saveChanges('<?=$value->CourseCode?>','<?=$AttDetails->AttID?>',<?=$value->MarkID?>,this,<?=$i?>)" class='editCourse'>Edit</button></td>
               </tr>
             <?php
+                $i++;
               }
             ?>
           </tbody>
         </table>
         <?php
           if($pass){
-            $total=$total/count($result);
+            $total=$total/$totalCredits;
         ?>
           <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);" id='MainResult'>Semester GPA: <strong><?=number_format($total,2)?></strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
         <?php
@@ -143,7 +151,7 @@ function calculateGPA($internal, $external) {
   }
   ?>
   <script>
-    function saveChanges(CourseCode,AttID,MarkID,obj){
+    function saveChanges(CourseCode,AttID,MarkID,obj,NO){
         const par=obj.parentNode.parentNode;
 
         const INTS=par.querySelector("#INTS").value;
@@ -166,15 +174,20 @@ function calculateGPA($internal, $external) {
         const AllGPA=document.querySelectorAll("#GPA");
         let Totalvalues=0;
         let pass=true;
-        AllGPA.forEach(element => {
+        if(EXT<2){
+          pass=false;
+        }
+        let TotalCredits=0;
+        AllGPA.forEach((element,index) => {
             let value=parseFloat(element.innerHTML);
-            Totalvalues+=value;
+            Totalvalues+=value*credits[index];
+            TotalCredits+=credits[index];
             if(value<2){
                 pass=false;
             }
         });
         if(pass){
-            MainResult.innerHTML=`Semester GPA: <strong>${(Totalvalues/AllGPA.length).toFixed(2)}</strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span>`;
+            MainResult.innerHTML=`Semester GPA: <strong>${(Totalvalues/TotalCredits).toFixed(2)}</strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span>`;
         }else{
             MainResult.innerHTML=`<span class="result-pass" style='color: red;'>Result: Failed</span>`
         }

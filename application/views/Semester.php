@@ -17,16 +17,16 @@
 <?php
 function numberToWords($num) {
     $map = [
-        1 => "FIRST",
-        2 => "SECOND",
-        3 => "THIRD",
-        4 => "FOURTH",
-        5 => "FIFTH",
-        6 => "SIXTH",
-        7 => "SEVENTH",
-        8 => "EIGHTH",
-        9 => "NINTH",
-        10 => "TENTH"
+        1 => "First",
+        2 => "Second",
+        3 => "Third",
+        4 => "Fourth",
+        5 => "Fifth",
+        6 => "Sixth",
+        7 => "Seventh",
+        8 => "Eighth",
+        9 => "Ninth",
+        10 => "Tenth"
     ];
 
     return $map[$num] ?? "UNKNOWN";

@@ -11,10 +11,6 @@ class admin extends CI_Controller {
 	public function index()
 	{
         $this->loader();
-        if ($this->session->userdata('user_name')) {
-            redirect('admin/home');
-            return;
-        }
         
 		if ($this->input->post('Username') && $this->input->post('Password')) {
             $Username = $this->input->post('Username');
@@ -35,6 +31,10 @@ class admin extends CI_Controller {
                 $this->load->view('login', $data);
             }
         } else {
+            if ($this->session->userdata('user_name')) {
+                redirect('admin/home');
+                return;
+            }
             $this->load->view('login');
         }
 	}

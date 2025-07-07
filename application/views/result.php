@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Exam Result</title>
+  <title>Exam Result</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/style.css')."?t=".time(); ?>">
 </head>
@@ -35,7 +35,7 @@ function gradingSystem($GPA) {
 ?>
 <body>
   <div class="container">
-    <h1>Our Results</h1>
+    <h1>Results</h1>
     <?php if(isset($Exam)){?><h2><?=$Exam->ExamName?></h2><?php }?>
 
     <form class="input-form" method='POST'>
@@ -44,7 +44,7 @@ function gradingSystem($GPA) {
         <option disabled selected value=''>Select Your Semester</option>
         <?php
           foreach($semester as $sem){?>
-            <option value='<?=$sem->ExamID?>'  <?=(isset($Exam) && ($Exam->ExamID==$sem->ExamID))?"SELECTED":""?>><?=explode('PG',$sem->ExamName)[0]?></option>
+            <option value='<?=$sem->ExamID?>'  <?=(isset($Exam) && ($Exam->ExamID==$sem->ExamID))?"SELECTED":""?>><?=$sem->ExamName?></option>
             <?php
           }
         
@@ -77,11 +77,13 @@ function gradingSystem($GPA) {
         <tbody>
           <?php
             $total=0;
+            $totalCredits=0;
             $pass=true;
             foreach($result as $value){
               $GPA=calculateGPA($value->INTS,$value->EXT);
               $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
-              $total+=$GPA;
+              $total+=$GPA*$value->Credit;
+              $totalCredits+=$value->Credit;
               if($GPA==0){
                 $pass=false;
               }
@@ -104,9 +106,9 @@ function gradingSystem($GPA) {
       </table>
       <?php
         if($pass){
-          $total=$total/count($result);
+          $total=$total/$totalCredits;
       ?>
-        <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);">Semester GPA: <strong><?=number_format($total,2)?></strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
+        <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);">Semester GPA: <strong><?=number_format($total,2)?></strong> <span class="result-pass">&nbsp; | &nbsp; Grade: <?=gradingSystem($total)?></span> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
       <?php
         }else{?>
           <h3 style="text-align:center; margin-top: 30px; color: red;"><span class="result-pass" style='color: red;'>Result: Failed</span></h3>
