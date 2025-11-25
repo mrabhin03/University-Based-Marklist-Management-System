@@ -29,7 +29,15 @@
             <tr>
                 <td data-label="Semester">Semester</td>
                 <td data-label=""><input type="text" name="TotalSemesters" id="" value='<?=(isset($program))?$program->TotalSemesters:''?>' placeholder='Enter the Exam Name' required></td>
-                
+            </tr>
+            <tr>
+                <td data-label="Type">Type</td>
+                <td data-label="">
+                  <select name="TheType" id="">
+                    <option value="UG" <?=(isset($program) && ($program->Type=="UG"))?"SELECTED":''?>>Undergraduate (UG)</option>
+                    <option value="PG" <?=(isset($program) && ($program->Type=="PG"))?"SELECTED":''?>>Postgraduate (PG)</option>
+                  </select>
+                </td>
             </tr>
             <tr>
                 <td colspan='2'>

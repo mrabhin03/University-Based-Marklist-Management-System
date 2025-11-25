@@ -14,6 +14,44 @@ function calculateGPA($internal, $external) {
     $total = $internal + $external;
     return $total;
 }
+function getGrade($percentage) {
+    if ($percentage >= 95) {
+        return "S";   // Outstanding
+    } elseif ($percentage >= 85) {
+        return "A+"; // Excellent
+    } elseif ($percentage >= 75) {
+        return "A";  // Very Good
+    } elseif ($percentage >= 65) {
+        return "B+"; // Good
+    } elseif ($percentage >= 55) {
+        return "B";  // Above Average
+    } elseif ($percentage >= 45) {
+        return "C";  // Satisfactory
+    } elseif ($percentage >= 35) {
+        return "D";  // Pass
+    } else {
+        return "F";  // Failure
+    }
+}
+function getGradePoint($grade) {
+    $grade = strtoupper(trim($grade));
+
+    switch ($grade) {
+        case "S":  return 10.0;
+        case "A+": return 9.0;
+        case "A":  return 8.0;
+        case "B+": return 7.0;
+        case "B":  return 6.0;
+        case "C":  return 5.0;
+        case "D":  return 4.0;
+        case "F":
+        case "AB":
+            return 0.0;
+        default:
+            return 0.0; // Unknown grade
+    }
+}
+
 
 ?>
 <body>
@@ -90,8 +128,10 @@ function calculateGPA($internal, $external) {
               <th>Type</th>
               <th>INT</th>
               <th>EXT</th>
-              <th>GPA</th>
+              
+              <th><?=($Student->Type=="PG")?"GPA":"CP"?></th>
               <th>Result</th>
+
               <th>Action</th>
             </tr>
           </thead>
@@ -102,14 +142,27 @@ function calculateGPA($internal, $external) {
               $totalCredits=0;
               $i=0;
               foreach($result as $value){
-                $GPA=calculateGPA($value->INTS,$value->EXT);
-                $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
-                $total+=$GPA*$value->Credit;
                 $totalCredits+=$value->Credit;
-                if($GPA==0){
-                  $pass=false;
+                if ($Student->Type=="PG"){
+                  $GPA=calculateGPA($value->INTS,$value->EXT);
+                  $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
+                  $total+=$GPA*$value->Credit;
+                  
+                  if($GPA==0){
+                    $pass=false;
+                  }
+                }else{
+                  $sum=$value->EXT+$value->INTS;
+                  $CP=0;
+                  if ($value->EXT>=24){
+                    $CP=getGradePoint(getGrade((($sum)/100)*100));
+                    $total+=($value->Credit*$CP);
+                  }else{
+                    $pass=false;
+                  }
                 }
                 echo "<script>credits[$i]=".$value->Credit.";</script>";
+                
             ?>
               <tr>
                 <td data-label="Course Code"><?=$value->CourseCode?></td>
@@ -117,9 +170,14 @@ function calculateGPA($internal, $external) {
                 <td data-label="Type"><?=$value->CourseType?></td>
                 <td data-label="INT"><input style='width:80px' type="number" id='INTS' value='<?=$value->INTS?>'></td>
                 <td data-label="EXT"><input style='width:80px' type="number" id='EXT' value='<?=$value->EXT?>'></td>
-                <td data-label="GPA" id='GPA'><?=number_format($GPA,2)?></td>
-                <td data-label="Result" id='Result' class="<?=($GPA>=2)?'result-pass':'result-fail'?>"><?=($GPA>=2)?"Passed":"Failed"?></td>
-                <td data-label="Action"><button onclick="saveChanges('<?=$value->CourseCode?>','<?=$AttDetails->AttID?>',<?=$value->MarkID?>,this,<?=$i?>)" class='editCourse'>Edit</button></td>
+                <?php if ($Student->Type=="PG"){?>
+                  <td data-label="OutValue" id='OutValue'><?=number_format($GPA,2)?></td>
+                  <td data-label="Result" id='Result' class="<?=($GPA>=2)?'result-pass':'result-fail'?>"><?=($GPA>=2)?"Passed":"Failed"?></td>
+                <?php }else{ ?>
+                  <td data-label="OutValue" id='OutValue'><?=$CP?></td>
+                  <td data-label="Result" id='Result' class="<?=($CP>0)?'result-pass':'result-fail'?>"><?=($CP>0)?"Passed":"Failed"?></td>
+                <?php } ?>
+                <td data-label="Action"><button onclick="saveChanges('<?=$value->CourseCode?>','<?=$AttDetails->AttID?>',<?=$value->MarkID?>,this,<?=$i?>,'<?=$Student->Type?>')" class='editCourse'>Edit</button></td>
               </tr>
             <?php
                 $i++;
@@ -131,7 +189,7 @@ function calculateGPA($internal, $external) {
           if($pass){
             $total=$total/$totalCredits;
         ?>
-          <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);" id='MainResult'>Semester GPA: <strong><?=number_format($total,2)?></strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
+          <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);" id='MainResult'>Semester <?=($Student->Type=="PG")?"GPA":"SCPA"?>: <strong><?=number_format($total,2)?></strong> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
         <?php
           }else{?>
             <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);" id='MainResult' ><span class="result-pass" style='color: red;'>Result: Failed</span></h3>
@@ -151,34 +209,55 @@ function calculateGPA($internal, $external) {
   }
   ?>
   <script>
-    function saveChanges(CourseCode,AttID,MarkID,obj,NO){
+    function saveChanges(CourseCode,AttID,MarkID,obj,NO,Type){
         const par=obj.parentNode.parentNode;
 
         let  INTS=parseFloat(par.querySelector("#INTS").value);
-        INTS=(INTS>5)?5:INTS;
         par.querySelector("#INTS").value=INTS.toFixed(2);
 
 
         let EXT=parseFloat(par.querySelector("#EXT").value);
-        EXT=(EXT>5)?5:EXT;
         par.querySelector("#EXT").value=EXT.toFixed(2);
 
-        GPAValue=((INTS*0.25)+(EXT*0.75)).toFixed(2);
-        par.querySelector("#GPA").innerHTML=GPAValue
+
+        outValue=0;
+        passed=false
+        if (Type=="PG"){
+          INTS=(INTS>5)?5:INTS;
+          EXT=(EXT>5)?5:EXT;
+          outValue=((INTS*0.25)+(EXT*0.75)).toFixed(2);
+          if (outValue>=2){
+            passed=true
+          }
+        }else{
+          let Sumer=INTS+EXT;
+          let per=(Sumer*100)/100
+          outValue=getGradePoint(getGrade(per))
+          if(outValue>0 && EXT>=24){
+            passed=true
+          }
+        }
+
+
         const Result=par.querySelector("#Result")
         Result.classList.remove("result-pass")
         Result.classList.remove("result-fail")
+        if(passed){
+              Result.innerHTML='Passed';
+              Result.classList.add("result-pass")
+          }else{
+              Result.innerHTML='Failed';
+              Result.classList.add("result-fail")
+          }
 
-        if(GPAValue>=2){
-            Result.innerHTML='Passed';
-            Result.classList.add("result-pass")
-        }else{
-            Result.innerHTML='Failed';
-            Result.classList.add("result-fail")
-        }
+        
+        par.querySelector("#OutValue").innerHTML=outValue
+        
+
+        
         const MainResult=document.querySelector("#MainResult")
 
-        const AllGPA=document.querySelectorAll("#GPA");
+        const AllGPA=document.querySelectorAll("#OutValue");
         let Totalvalues=0;
         let pass=true;
         if(EXT<2){
@@ -220,6 +299,47 @@ function calculateGPA($internal, $external) {
 
         xhr.send(data);
     }
+
+
+
+    function getGrade(percentage) {
+      if (percentage >= 95) {
+          return "S";   // Outstanding
+      } else if (percentage >= 85) {
+          return "A+"; // Excellent
+      } else if (percentage >= 75) {
+          return "A";  // Very Good
+      } else if (percentage >= 65) {
+          return "B+"; // Good
+      } else if (percentage >= 55) {
+          return "B";  // Above Average
+      } else if (percentage >= 45) {
+          return "C";  // Satisfactory
+      } else if (percentage >= 35) {
+          return "D";  // Pass
+      } else {
+          return "F";  // Failure
+      }
+  }
+  function getGradePoint(grade) {
+      grade = grade.trim().toUpperCase();
+
+      switch (grade) {
+          case "S":  return 10.0;
+          case "A+": return 9.0;
+          case "A":  return 8.0;
+          case "B+": return 7.0;
+          case "B":  return 6.0;
+          case "C":  return 5.0;
+          case "D":  return 4.0;
+          case "F":
+          case "AB":
+              return 0.0;
+          default:
+              return 0.0; // Unknown grade
+      }
+  }
+
   </script>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

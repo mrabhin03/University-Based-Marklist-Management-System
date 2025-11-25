@@ -18,7 +18,7 @@
 foreach($program as $details){
 ?>
     <div class="base">
-      <div class="base-title"><?=$details->ProgramName?></div>
+      <div class="base-title"><?=$details->ProgramName?> - <?=$details->Type?></div>
       <div class="base-buttons">
         <a href="AcademicYear?program=<?=$details->ProgramID?>" ><button style='background-color:#3889d9'>View Students</button></a>
         <a href="Semester?program=<?=$details->ProgramID?>"><button style='background-color:#3671ac'>View Courses</button></a>

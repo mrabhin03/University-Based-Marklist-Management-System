@@ -32,6 +32,63 @@ function gradingSystem($GPA) {
     }
 }
 
+function getGrade($percentage) {
+    if ($percentage >= 95) {
+        return "S";   // Outstanding
+    } elseif ($percentage >= 85) {
+        return "A+"; // Excellent
+    } elseif ($percentage >= 75) {
+        return "A";  // Very Good
+    } elseif ($percentage >= 65) {
+        return "B+"; // Good
+    } elseif ($percentage >= 55) {
+        return "B";  // Above Average
+    } elseif ($percentage >= 45) {
+        return "C";  // Satisfactory
+    } elseif ($percentage >= 35) {
+        return "D";  // Pass
+    } else {
+        return "F";  // Failure
+    }
+}
+function getGradePoint($grade) {
+    $grade = strtoupper(trim($grade));
+
+    switch ($grade) {
+        case "S":  return 10.0;
+        case "A+": return 9.0;
+        case "A":  return 8.0;
+        case "B+": return 7.0;
+        case "B":  return 6.0;
+        case "C":  return 5.0;
+        case "D":  return 4.0;
+        case "F":
+        case "AB":
+            return 0.0;
+        default:
+            return 0.0; // Unknown grade
+    }
+}
+
+function getOverallGrade($cgpa) {
+    if ($cgpa >= 9.5) {
+        return "S";
+    } elseif ($cgpa >= 8.5) {
+        return "A+";
+    } elseif ($cgpa >= 7.5) {
+        return "A";
+    } elseif ($cgpa >= 6.5) {
+        return "B+";
+    } elseif ($cgpa >= 5.5) {
+        return "B";
+    } elseif ($cgpa >= 4.5) {
+        return "C";
+    } elseif ($cgpa >= 3.5) {
+        return "D";
+    } else {
+        return "F";
+    }
+}
 ?>
 <body>
   <div class="container">
@@ -57,8 +114,9 @@ function gradingSystem($GPA) {
         <thead>
           <tr>
             <th>Rank</th>
+            <th>PRN</th>
             <th>Name</th>
-            <th>GPA</th>
+            <th><?=($Type=="PG")?"GPA":"SCPA"?></th>
             <th>Grade</th>
             <th>Result</th>
           </tr>
@@ -78,9 +136,10 @@ function gradingSystem($GPA) {
           ?>
             <tr>
               <td data-label="Rank" <?=(++$i<=3)?"style='font-size:20px;'":""?>><?=($i<=3)?$Medals[$i]:$i;?></td>
+              <td data-label="Name" style='text-align:left;'><?=$value->PRN?></td>
               <td data-label="Name" style='text-align:left;'><?=$value->Name?></td>
-              <td data-label="GPA"><?=number_format($value->TotalGPA,2)?></td>
-              <td data-label="Grade"><?=($value->Pass==1)?gradingSystem($value->TotalGPA):'---'?></td>
+              <td data-label="OUT"><?=number_format($value->TotalGPA,2)?></td>
+                <td data-label="Grade"><?=($value->Pass==1)?($Type=="PG")?gradingSystem($value->TotalGPA):getOverallGrade($value->TotalGPA):'---'?></td>
               <td data-label="Result" class='<?=($value->Pass==1)?'result-pass':'result-fail'?>'><?=($value->Pass==1)?"Passed":"Failed"?></td>
             </tr>
           <?php

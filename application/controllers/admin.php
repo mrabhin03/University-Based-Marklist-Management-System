@@ -80,11 +80,13 @@ class admin extends CI_Controller {
         $ProgramName=$this->input->post('ProgramName');
         $TotalSemesters=$this->input->post('TotalSemesters');
         $ProgramID=$this->input->post('ProgramID');
+        $Type=$this->input->post('TheType');
         $Mode=$this->input->post('Mode');
         if($Mode==0){
             $data = array(
                 'ProgramName'      => $ProgramName,
                 'TotalSemesters'   => $TotalSemesters,
+                'Type'             => $Type,
             );
             $inserted = $this->db->insert('program', $data);
             redirect('admin');
@@ -92,6 +94,7 @@ class admin extends CI_Controller {
             $data = array(
                 'ProgramName'      => $ProgramName,
                 'TotalSemesters'   => $TotalSemesters,
+                'Type'             => $Type,
             );
             $this->db->where('ProgramID',$ProgramID);
             $update = $this->db->update('program', $data);

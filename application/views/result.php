@@ -32,6 +32,65 @@ function gradingSystem($GPA) {
     }
 }
 
+
+function getGrade($percentage) {
+    if ($percentage >= 95) {
+        return "S";   // Outstanding
+    } elseif ($percentage >= 85) {
+        return "A+"; // Excellent
+    } elseif ($percentage >= 75) {
+        return "A";  // Very Good
+    } elseif ($percentage >= 65) {
+        return "B+"; // Good
+    } elseif ($percentage >= 55) {
+        return "B";  // Above Average
+    } elseif ($percentage >= 45) {
+        return "C";  // Satisfactory
+    } elseif ($percentage >= 35) {
+        return "D";  // Pass
+    } else {
+        return "F";  // Failure
+    }
+}
+function getGradePoint($grade) {
+    $grade = strtoupper(trim($grade));
+
+    switch ($grade) {
+        case "S":  return 10.0;
+        case "A+": return 9.0;
+        case "A":  return 8.0;
+        case "B+": return 7.0;
+        case "B":  return 6.0;
+        case "C":  return 5.0;
+        case "D":  return 4.0;
+        case "F":
+        case "AB":
+            return 0.0;
+        default:
+            return 0.0; // Unknown grade
+    }
+}
+
+function getOverallGrade($cgpa) {
+    if ($cgpa >= 9.5) {
+        return "S";
+    } elseif ($cgpa >= 8.5) {
+        return "A+";
+    } elseif ($cgpa >= 7.5) {
+        return "A";
+    } elseif ($cgpa >= 6.5) {
+        return "B+";
+    } elseif ($cgpa >= 5.5) {
+        return "B";
+    } elseif ($cgpa >= 4.5) {
+        return "C";
+    } elseif ($cgpa >= 3.5) {
+        return "D";
+    } else {
+        return "F";
+    }
+}
+
 ?>
 <body>
   <div class="container">
@@ -80,13 +139,25 @@ function gradingSystem($GPA) {
             $totalCredits=0;
             $pass=true;
             foreach($result as $value){
-              $GPA=calculateGPA($value->INTS,$value->EXT);
-              $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
-              $total+=$GPA*$value->Credit;
               $totalCredits+=$value->Credit;
-              if($GPA==0){
-                $pass=false;
-              }
+                if ($Student->Type=="PG"){
+                  $GPA=calculateGPA($value->INTS,$value->EXT);
+                  $GPA=($GPA>=2 && $value->EXT>=2 && $value->INTS>=2)?$GPA:0;
+                  $total+=$GPA*$value->Credit;
+                  
+                  if($GPA==0){
+                    $pass=false;
+                  }
+                }else{
+                  $sum=$value->EXT+$value->INTS;
+                  $CP=0;
+                  if ($value->EXT>=24 || $value->INTS>20){
+                    $CP=getGradePoint(getGrade((($sum)/100)*100));
+                    $total+=($value->Credit*$CP);
+                  }else{
+                    $pass=false;
+                  }
+                }
           ?>
             <tr>
               <td data-label="Course Code"><?=$value->CourseCode?></td>
@@ -95,9 +166,16 @@ function gradingSystem($GPA) {
               <td data-label="EXT (Theory)"><?=($value->CourseType=='Theory')?$value->EXT:"---"?></td>
               <td data-label="INT (Practical)"><?=($value->CourseType=='Practical')?$value->INTS:"---"?></td>
               <td data-label="EXT (Practical)"><?=($value->CourseType=='Practical')?$value->EXT:"---"?></td>
-              <td data-label="GPA"><?=number_format($GPA,2)?></td>
-              <td data-label="Grade"><?=gradingSystem($GPA)?></td>
-              <td data-label="Result" class="<?=($GPA>=2)?'result-pass':'result-fail'?>"><?=($GPA>=2)?"Passed":"Failed"?></td>
+              <?php if ($Student->Type=="PG"){?>
+                  <td data-label="OutValue"><?=number_format($GPA,2)?></td>
+                  <td data-label="Grade"><?=gradingSystem($GPA)?></td>
+                  <td data-label="Result" id='Result' class="<?=($GPA>=2)?'result-pass':'result-fail'?>"><?=($GPA>=2)?"Passed":"Failed"?></td>
+                <?php }else{ ?>
+                  <td data-label="OutValue"><?=$CP?></td>
+                  <td data-label="Grade"><?=getGrade((($value->EXT+$value->INTS)/100)*100)?></td>
+                  <td data-label="Result" id='Result' class="<?=($CP>0)?'result-pass':'result-fail'?>"><?=($CP>0)?"Passed":"Failed"?></td>
+                <?php } ?>
+              
             </tr>
           <?php
             }
@@ -107,8 +185,9 @@ function gradingSystem($GPA) {
       <?php
         if($pass){
           $total=$total/$totalCredits;
+          
       ?>
-        <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);">Semester GPA: <strong><?=number_format($total,2)?></strong> <span class="result-pass">&nbsp; | &nbsp; Grade: <?=gradingSystem($total)?></span> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
+        <h3 style="text-align:center; margin-top: 30px; color: var(--highlight-color);">Semester <?=($Student->Type=="PG")?"GPA":"SCPA"?>: <strong><?=number_format($total,2)?></strong> <span class="result-pass">&nbsp; | &nbsp; Grade: <?=($Student->Type=="PG")?gradingSystem($total):getOverallGrade($total)?></span> &nbsp; | &nbsp; <span class="result-pass">Result: Passed</span></h3>
       <?php
         }else{?>
           <h3 style="text-align:center; margin-top: 30px; color: red;"><span class="result-pass" style='color: red;'>Result: Failed</span></h3>
