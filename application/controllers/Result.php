@@ -31,8 +31,12 @@ class Result extends CI_Controller {
 		}
 	}
 	
-	public function PG()
+	public function PG($subpage = '')
 	{
+		if ($subpage === 'Rank') {
+			$rankData = $this->Rank("PG");
+			return;
+		}
 		$this->load->helper('url');
 		$this->load->helper('form');
 		$this->load->database();
@@ -49,8 +53,12 @@ class Result extends CI_Controller {
 		$this->load->view('result',$details);
 	}
 
-	public function UG()
+	public function UG($subpage = '')
 	{
+		if ($subpage === 'Rank') {
+			$rankData = $this->Rank("UG");
+			return;
+		}
 		$this->load->helper('url');
 		$this->load->helper('form');
 		$this->load->database();
@@ -67,7 +75,7 @@ class Result extends CI_Controller {
 		$this->load->view('result',$details);
 	}
 
-	public function Rank(){
+	public function Rank($RankType){
 		$this->load->helper('url');
 		$this->load->helper('form');
 		$this->load->database();
@@ -77,19 +85,24 @@ class Result extends CI_Controller {
 			$ExamID=$PostExamID;
 		}else{
 			$this->db->select('MAX(ExamID) as LatestExam');
-            $this->db->from('exams');
+            $this->db->from('exams')->join("program","program.ProgramID=exams.ProgramID")->where("program.Type",$RankType);
             $query = $this->db->get();
             $result = $query->row();
             $ExamID=$result->LatestExam;
 		}
-		$data['Exam']=$this->db
-		->select('exams.*, program.*')
-		->from('exams')
-		->join('program', 'program.ProgramID = exams.ProgramID', 'inner')
-		->where('exams.ExamID', $ExamID)
-		->get()
-		->row();
+		$query = $this->db
+			->select('exams.*, program.*')
+			->from('exams')
+			->join('program', 'program.ProgramID = exams.ProgramID', 'inner')
+			->where('exams.ExamID', $ExamID)
+			->get();
 
+		if ($query->num_rows()==0){
+			$this->load->view('Errors');
+			return;
+		}
+
+		$data['Exam'] = $query->row();
 
 		
 		$data['Type']=$data['Exam']->Type;
@@ -146,8 +159,9 @@ class Result extends CI_Controller {
 			$data['results'] = $query->result();
 
 		}
-		$data['semester']=$this->db->get('exams')->result();
+		$data['semester']=$this->db->from('exams')->join("program","program.ProgramID=exams.ProgramID")->where("program.Type",$RankType)->get()->result();
 		$this->load->view('Rank',$data);
+		// return $data;
 	}
 	
 }

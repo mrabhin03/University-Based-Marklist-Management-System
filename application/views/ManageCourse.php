@@ -51,6 +51,7 @@
                     <select name="CourseType" required>
                         <option value="Theory"  <?=(isset($CourseDetails) && $CourseDetails->CourseType=='Theory')?"SELECTED":""?>>Theory</option>
                         <option value="Practical" <?=(isset($CourseDetails) && $CourseDetails->CourseType=='Practical')?"SELECTED":""?>>Practical</option>
+                        <option value="Elective" <?=(isset($CourseDetails) && $CourseDetails->CourseType=='Elective')?"SELECTED":""?>>Elective</option>
                     </select>
                 </td>
             </tr>

@@ -90,10 +90,11 @@ function getOverallGrade($cgpa) {
         return "F";
     }
 }
-
+$current_type = $this->uri->segment(2);
 ?>
 <body>
   <div class="container">
+    <a href="../"><ion-icon style='font-size:20px' name="arrow-back-outline"></ion-icon></a>
     <h1>Results</h1>
     <?php if(isset($Exam)){?><h2><?=$Exam->ExamName?></h2><?php }?>
 
@@ -110,6 +111,7 @@ function getOverallGrade($cgpa) {
         ?>
       </select>
       <button>Search Result</button>
+      <a href="<?= site_url("Result/$current_type/Rank"); ?>"><button type='button'>Show Rank</button></a>
     </form>
     <?php if(isset($Exam)&& isset($Student) && isset($result)){?>
       <div class="info">
@@ -139,6 +141,11 @@ function getOverallGrade($cgpa) {
             $totalCredits=0;
             $pass=true;
             foreach($result as $value){
+
+              if($value->CourseType=='Elective' && $value->INTS==0){
+                continue;
+              }
+
               $totalCredits+=$value->Credit;
                 if ($Student->Type=="PG"){
                   $GPA=calculateGPA($value->INTS,$value->EXT);
@@ -162,8 +169,8 @@ function getOverallGrade($cgpa) {
             <tr>
               <td data-label="Course Code"><?=$value->CourseCode?></td>
               <td data-label="Course"><?=$value->CourseName?></td>
-              <td data-label="INT (Theory)"><?=($value->CourseType=='Theory')?$value->INTS:"---"?></td>
-              <td data-label="EXT (Theory)"><?=($value->CourseType=='Theory')?$value->EXT:"---"?></td>
+              <td data-label="INT (Theory)"><?=($value->CourseType=='Theory'||$value->CourseType=='Elective')?$value->INTS:"---"?></td>
+              <td data-label="EXT (Theory)"><?=($value->CourseType=='Theory'||$value->CourseType=='Elective')?$value->EXT:"---"?></td>
               <td data-label="INT (Practical)"><?=($value->CourseType=='Practical')?$value->INTS:"---"?></td>
               <td data-label="EXT (Practical)"><?=($value->CourseType=='Practical')?$value->EXT:"---"?></td>
               <?php if ($Student->Type=="PG"){?>
@@ -202,5 +209,8 @@ function getOverallGrade($cgpa) {
     }
   }
   ?>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

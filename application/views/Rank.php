@@ -89,9 +89,12 @@ function getOverallGrade($cgpa) {
         return "F";
     }
 }
+
+$current_type = $this->uri->segment(2);
 ?>
 <body>
   <div class="container">
+    <a href="<?= site_url("Result/$current_type"); ?>"><ion-icon style='font-size:20px' name="arrow-back-outline"></ion-icon></a>
     <h1>Ranking</h1>
     <?php if(isset($Exam)){?><h2><?=$Exam->ExamName?></h2><?php }?>
 
@@ -156,5 +159,7 @@ function getOverallGrade($cgpa) {
     }
   }
   ?>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
