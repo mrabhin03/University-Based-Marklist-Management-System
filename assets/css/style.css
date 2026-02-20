@@ -64,7 +64,7 @@
     input[type="text"],input[type="number"],
     select {
       padding: 10px;
-      margin: 0px 10px;
+      margin: 5px 10px;
       width: 220px;
       font-size: 14px;
       border: 1px solid #ccc;
