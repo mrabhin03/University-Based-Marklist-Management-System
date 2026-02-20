@@ -26,7 +26,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
 $path = str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
-
 $config['base_url'] = $protocol . "://" . $host . $path;
 
 /*
